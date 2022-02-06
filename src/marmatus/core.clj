@@ -1,5 +1,5 @@
 (ns marmatus.core
-  (:require [marmatus.impl :as impl]))
+  (:require [marmatus.parser :as parser]))
 
 (defmacro mformat [fmt & args]
   (when-not (string? fmt)
@@ -7,5 +7,5 @@
 
   (let [argnames (mapv (fn [_] (gensym)) args)]
     `(let [~@(interleave argnames args)]
-       (str ~@(impl/parse-fmt (impl/parser fmt argnames))))))
+       (str ~@(parser/parse-fmt (parser/parser fmt argnames))))))
 

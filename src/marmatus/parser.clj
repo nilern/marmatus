@@ -1,4 +1,5 @@
-(ns marmatus.impl
+(ns marmatus.parser
+  (:require [marmatus.runtime :as rt])
   (:import [java.util UnknownFormatConversionException MissingFormatArgumentException]))
 
 (defprotocol Parser
@@ -48,7 +49,7 @@
 
            (if (< index (count args))
              (let [arg (get args index)]
-               [`(format-string ~arg)])
+               [`(rt/format-string ~arg)])
              (throw (MissingFormatArgumentException. "%s"))))
 
       nil (throw (UnknownFormatConversionException. \%))
@@ -68,8 +69,4 @@
                       (into text-forms))))
 
       nil forms)))
-
-;;;;
-
-(defn format-string [^Object v] (if (nil? v) "null" (.toString v)))
 
