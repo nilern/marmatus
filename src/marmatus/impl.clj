@@ -27,7 +27,9 @@
   (let [start (parser-index parser)]
     (loop [end start]
       (case (parser-peek parser)
-        (\% nil) (parser-slice parser start end)
+        (\% nil) (if (= start end)
+                   []
+                   [(parser-slice parser start end)])
 
         (do
           (parser-next! parser)
@@ -56,14 +58,14 @@
 ;; fmt ::= text (specifier text)*
 (defn parse-fmt [parser]
   (loop [specifier-index 0
-         forms [(parse-text parser)]]
+         forms (parse-text parser)]
     (case (parser-peek parser)
       \% (let [specifier-forms (parse-specifier parser specifier-index)
-               text-form (parse-text parser)]
+               text-forms (parse-text parser)]
            (recur (inc specifier-index)
                   (-> forms
                       (into specifier-forms)
-                      (conj text-form))))
+                      (into text-forms))))
 
       nil forms)))
 
