@@ -19,7 +19,7 @@
   (parser-peek [_] (get string index))
   (parser-next! [_] (set! index (inc index))))
 
-(defn parser [s args] (FmtParser. s 0 args))
+(defn- parser [s args] (FmtParser. s 0 args))
 
 ;;;;
 
@@ -50,14 +50,14 @@
            (if (< index (count args))
              (let [arg (get args index)]
                [`(rt/format-string ~arg)])
-             (throw (MissingFormatArgumentException. "%s"))))
+             (throw (MissingFormatArgumentException. (str \% c)))))
 
       nil (throw (UnknownFormatConversionException. \%))
 
       (throw (UnknownFormatConversionException. c)))))
 
 ;; fmt ::= text (specifier text)*
-(defn parse-fmt [parser]
+(defn- parse-fmt [parser]
   (loop [specifier-index 0
          forms (parse-text parser)]
     (case (parser-peek parser)
@@ -69,4 +69,8 @@
                       (into text-forms))))
 
       nil forms)))
+
+;;;;
+
+(defn parse [fmt argnames] (parse-fmt (parser fmt argnames)))
 

@@ -7,5 +7,5 @@
 
   (let [argnames (mapv (fn [_] (gensym)) args)]
     `(let [~@(interleave argnames args)]
-       (str ~@(parser/parse-fmt (parser/parser fmt argnames))))))
+       (str ~@(parser/parse fmt argnames)))))
 
